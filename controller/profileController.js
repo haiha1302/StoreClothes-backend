@@ -1,4 +1,5 @@
 const { db } = require('../database')
+const dotenv = require('dotenv').config()
 
 const getUserProfile = async (req, res) => {
     const usersProfile = await db.upload.find({}).toArray()
@@ -37,7 +38,7 @@ const postNewUserProfile = async (req, res) => {
                 res.json({
                     status: 'Successfully create',
                     success: 1,
-                    avatarUrl: `http://localhost:5000/upload/${req.file.filename}`
+                    avatarUrl: `${process.env.BASEURL}/${req.file.filename}`
                 })
             }
         })
