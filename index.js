@@ -2,7 +2,6 @@ const express = require('express')
 const dotenv = require('dotenv')
 const { connectToMongo } = require('./database')
 const usersRouter = require('./routes/users')
-const uploadRouter = require('./routes/uploadUser')
 
 dotenv.config()
 
@@ -13,8 +12,7 @@ app.get('/', (req, res) => {
     res.json('Hello')
 })
 
-app.use('/users', usersRouter)
-app.use('/upload', express.static('Images'), uploadRouter)
+app.use('/users', express.static('Images'), usersRouter)
 
 connectToMongo()
 

@@ -1,16 +1,6 @@
 const { v4: uuid } = require('uuid')
 const { db } = require('../database')
 
-const checkId = async (id) => {
-    const check = await db.users.findOne({
-        id: id
-    })
-
-    if (check) {
-        return check
-    }
-}
-
 const getUsers = async (req, res) => {
     const users = await db.users.find({}).toArray()
     res.json(users)
@@ -19,6 +9,7 @@ const getUsers = async (req, res) => {
 const createUser = async (req, res) => {
     const user = {
         ...req.body,
+        image_path: req.file.filename,
         id: uuid()
     }
 
@@ -27,8 +18,10 @@ const createUser = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const checkUser = checkId(req.params.id)
-
+    const checkUser = await db.users.findOne({
+        id: req.params.id
+    })
+    console.log(req.params.id);
     if (!checkId) {
         res.json('User does not existed')
     }
@@ -37,7 +30,9 @@ const getUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    const checkUser = checkId(req.params.id)
+    const checkUser = await db.users.findOne({
+        id: req.params.id
+    })
 
     if (!checkUser) {
         res.json('User does not existed')
@@ -51,8 +46,10 @@ const deleteUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const checkUser = checkId(req.params.id)
-
+    const checkUser = await db.users.findOne({
+        id: req.params.id
+    })
+    
     if (!checkUser) {
         res.json('User does not existed')
     }
@@ -61,10 +58,13 @@ const updateUser = async (req, res) => {
         {id: req.params.id},
         {
             $set: {
-
+                ...req.body,
+                image_path: req.file.filename
             }
         }    
     )
+
+    res.json('Update success')   
 }
 
 module.exports = { getUsers, createUser, getUser, deleteUser, updateUser }
